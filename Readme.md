@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Svetlana  Sedova](https://up.htmlacademy.ru/ecmascript/21/user/2391847).
-* Наставник: `Неизвестно`.
+* Наставник: `Arthur Litovko`.
 
 ---
 
