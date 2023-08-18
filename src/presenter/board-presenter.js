@@ -1,4 +1,5 @@
 import { render, RenderPosition } from '../render.js';
+import { getSortedPointsByDates } from '../util.js';
 import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
 import TripInfoView from '../view/trip-info-view.js';
@@ -6,32 +7,42 @@ import TripPointEditView from '../view/trip-point-edit-view.js';
 import TripPointView from '../view/trip-point-view.js';
 import TripPointsListView from '../view/trip-points-list-view.js';
 
-const POINT_COUNT = 3;
-
 export default class BoardPresenter {
 
-  constructor() {
+  constructor({ pointsModel }) {
     this.initContainers();
+    this.pointsModel = pointsModel;
   }
 
   initContainers() {
-    this.tripPointsContainer = document.querySelector('.trip-events'); // Находит контейнер для сортировки и контента
-    this.tripInfoContainer = document.querySelector('.trip-main'); // Находит контейнер для информации о маршруте
-    this.tripFiltersContainer = document.querySelector('.trip-controls__filters'); // Находит контейнер для фильтров
-    this.tripPointsListContainer = new TripPointsListView(); // Создаёт контейнер для списка точек маршрута
+    // инициализирует контейнеры для отрисовки элементов разметки
+    this.tripPointsContainer = document.querySelector('.trip-events');
+    this.tripInfoContainer = document.querySelector('.trip-main');
+    this.tripFiltersContainer = document.querySelector('.trip-controls__filters');
+    this.tripPointsListContainer = new TripPointsListView();
   }
 
   init() {
-    render(new TripInfoView(), this.tripInfoContainer, RenderPosition.AFTERBEGIN); // Отрисовывает инфо о маршруте
-    render(new FilterView(), this.tripFiltersContainer); // Отрисовывает фильтры
+    this.boardPoints = getSortedPointsByDates([...this.pointsModel.getPoints()]);
 
-    render(new SortView(), this.tripPointsContainer); // Отрисовывает сортировку
-    render(this.tripPointsListContainer, this.tripPointsContainer); // Отрисовывает контейнер для списка точек маршрута
+    // Отрисовывает инфо о маршруте и фильтры
+    render(new TripInfoView(), this.tripInfoContainer, RenderPosition.AFTERBEGIN);
+    render(new FilterView(), this.tripFiltersContainer);
 
-    render(new TripPointEditView(), this.tripPointsListContainer.getElement()); // Отрисовывает форму создания
+    // Отрисовывает сортировку и контейнер для списка точек маршрута
+    render(new SortView(), this.tripPointsContainer);
+    render(this.tripPointsListContainer, this.tripPointsContainer);
 
-    for (let i = 0; i < POINT_COUNT; i++) { // Отрисовывает три точки маршрута
-      render(new TripPointView(), this.tripPointsListContainer.getElement());
+    // Отрисовывает форму редактирования
+    render(new TripPointEditView({point: this.boardPoints[0]}), this.tripPointsListContainer.getElement());
+
+    // Отрисовывает форму создания - пустая форма для редактирования
+    // render(new TripPointEditView({}), this.tripPointsListContainer.getElement());
+
+    // Отрисовывает три точки маршрута
+    for (let i = 1; i < this.boardPoints.length; i++) {
+      render(new TripPointView({point: this.boardPoints[i]}), this.tripPointsListContainer.getElement());
     }
   }
 }
+
