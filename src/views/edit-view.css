@@ -1,0 +1,7 @@
+.event__photos-container {
+  overflow-x: auto;
+}
+
+.event__type-label {
+  text-transform: capitalize;
+}
