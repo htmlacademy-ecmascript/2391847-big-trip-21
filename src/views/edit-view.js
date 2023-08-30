@@ -12,8 +12,17 @@ export default class EditView extends View {
   constructor() {
     super();
 
-    // this.classList.add('class1', 'class2');
+    this.addEventListener('click', this.onClick);
   }
+
+  connectedCallback () {
+    document.addEventListener('keydown', this);
+  }
+
+  disconnectedCallback () {
+    document.removeEventListener('keydown', this);
+  }
+
 
   /**
    * @override
@@ -256,6 +265,28 @@ export default class EditView extends View {
         </div>
       </section>
     `;
+  }
+
+  /**
+   * отправляет событие 'close' при клике на стрелку вверх на точке маршрута
+   * @param {PointerEvent & {
+   *  target: Element
+   * }} event
+   */
+  onClick(event) {
+    if (event.target.closest('.event__rollup-btn')) {
+      this.dispatch('close');
+    }
+  }
+
+  /**
+   * обработчик события нажатия на Esc
+   * @param {KeyboardEvent} event
+   */
+  handleEvent(event) {
+    if (event.key?.startsWith('Esc')) {
+      this.dispatch('close');
+    }
   }
 }
 

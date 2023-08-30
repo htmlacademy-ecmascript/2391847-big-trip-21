@@ -13,6 +13,8 @@ export default class Presenter {
     this.view = view;
     this.model = model;
     this.navigation = navigation;
+
+    // при изменении адреса в адресной строке все презентеры обновляют свои вьюшки
     this.navigation.addEventListener('change', this.onNavigationChange.bind(this));
 
     window.queueMicrotask(() => this.updateView());

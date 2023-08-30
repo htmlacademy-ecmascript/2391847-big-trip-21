@@ -11,7 +11,7 @@ export default class PointView extends View {
   constructor() {
     super();
 
-    // this.classList.add('class1', 'class2');
+    this.addEventListener('click', this.onClick);
   }
 
   /**
@@ -161,6 +161,18 @@ export default class PointView extends View {
         <span class="visually-hidden">Open event</span>
       </button>
     `;
+  }
+
+  /**
+   * отправляет событие 'open' при клике на стрелку вниз на точке маршрута
+   * @param {PointerEvent & {
+   *  target: Element
+   * }} event
+   */
+  onClick(event) {
+    if (event.target.closest('.event__rollup-btn')) {
+      this.dispatch('open');
+    }
   }
 }
 
