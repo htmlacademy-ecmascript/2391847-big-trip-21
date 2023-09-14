@@ -12,6 +12,7 @@ export default class PointView extends View {
     super();
 
     this.addEventListener('click', this.onClick);
+
   }
 
   /**
@@ -172,6 +173,10 @@ export default class PointView extends View {
   onClick(event) {
     if (event.target.closest('.event__rollup-btn')) {
       this.dispatch('open');
+      return;
+    }
+    if (event.target.closest('.event__favorite-btn')) {
+      this.dispatch('favorite');
     }
   }
 }

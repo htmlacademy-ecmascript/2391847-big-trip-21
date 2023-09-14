@@ -17,4 +17,20 @@ export default class PointModel extends Model {
     this.type = point.type;
   }
 
+  /**
+   * метод для приведения точки маршрута к формату сервера
+   * returns {Point} point
+   */
+  toJSON() {
+    return {
+      'id': this.id,
+      'base_price': this.basePrice,
+      'date_from': this.dateFrom,
+      'date_to': this.dateTo,
+      'is_favorite': this.isFavorite,
+      'offers': structuredClone(this.offersIds),
+      'destination': this.destinationId,
+      'type': this.type,
+    };
+  }
 }
