@@ -15,6 +15,7 @@ export default class ListPresenter extends Presenter {
 
     this.view.addEventListener('open', this.onViewOpen.bind(this));
     this.view.addEventListener('close', this.onViewClose.bind(this));
+    this.view.addEventListener('favorite', this.onViewFavorite.bind(this));
   }
 
   /**
@@ -68,6 +69,27 @@ export default class ListPresenter extends Presenter {
   }
 
   /**
+   * @param {import ('../views/list-view').ItemState} state
+   * @returns {import ('../models/point-model').default}
+   */
+  createPoint(state) {
+    const point = this.model.cteatePoint();
+
+    Object.assign(point, {
+      id: state.id,
+      type: state.types.find((type) => type.isSelected).value,
+      destinationId: state.destinations.find((destination) => destination.isSelected)?.id,
+      dateFrom: state.dateFrom,
+      dateTo: state.dateTo,
+      basePrice: state.basePrice,
+      offersIds: state.offers.filter((offer) => offer.isSelected).map((offer) => offer.id),
+      isFavorite: state.isFavorite,
+    });
+
+    return point;
+  }
+
+  /**
    * добавляет id точки маршрута в адресную строку при событии open (клике на стрелочку)
    * @param {CustomEvent & {
    *  target: import ('../views/point-view').default
@@ -90,6 +112,21 @@ export default class ListPresenter extends Presenter {
     delete params.edit;
 
     this.navigation.setParams(params);
+  }
+
+  /**
+   *  при событии favorite (клике на звездочку)
+   * @param {CustomEvent & {
+   *  target: import ('../views/point-view').default
+   * }} event
+   */
+  async onViewFavorite(event) {
+    const card = event.target;
+
+    card.state.isFavorite = !card.state.isFavorite;
+    await this.model.updatePoint(this.createPoint(card.state));
+
+    card.render();
   }
 }
 

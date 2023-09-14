@@ -39,8 +39,30 @@ export default class AppModel extends Model {
    * @returns {Array<PointModel>}
    */
   getPoints () {
-    return this.points.map((point) => new PointModel(point));
+    return this.points.map(this.cteatePoint);
   }
+
+  /**
+   * @param {Point} data
+   * @returns {PointModel}
+   */
+  cteatePoint (data = Object.create(null)) {
+    return new PointModel(data);
+  }
+
+  /**
+   * @param {PointModel} pointModel
+   * @returns {Promise<void>}
+   */
+  async updatePoint (pointModel) {
+    // TODO: нужно обновить данные на сервере
+    const data = pointModel.toJSON();
+    const index = this.points.findIndex((point) => point.id === data.id);
+
+    this.points.splice(index, 1, data);
+
+  }
+
 
   /**
    * @returns {Array<Destination>}
